@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+{% block title %}Contacto{% endblock %}
+{% block content %}
+<section class="panel formulario-panel">
+    <h1>Contacta con nosotros</h1>
+    <form method="post" novalidate>
+        {% csrf_token %}
+        <div class="campo">
+            <label for="{{ form.nombre.id_for_label }}">Nombre <span>*</span></label>
+            {{ form.nombre }}
+            {{ form.nombre.errors }}
+        </div>
+        <div class="campo">
+            <label for="{{ form.email.id_for_label }}">E-Mail <span>*</span></label>
+            {{ form.email }}
+            {{ form.email.errors }}
+        </div>
+        <div class="campo">
+            <label for="{{ form.mensaje.id_for_label }}">Mensaje <span>*</span></label>
+            {{ form.mensaje }}
+            {{ form.mensaje.errors }}
+        </div>
+        <button type="submit" class="boton">Guardar</button>
+    </form>
+</section>
+{% endblock %}

@@ -1,0 +1,240 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Materials Fadrell: materiales y herramientas para construir tus ideas.">
+  <title>Materials Fadrell</title>
+  <link rel="stylesheet" href="{% static 'css/estilos.css' %}">
+  <script src="https://code.jquery.com/jquery-3.7.1.min.js" defer></script>
+  <script src="{% static 'js/app.js' %}" defer></script>
+</head>
+<body
+  data-url-contacto="{% url 'guardar_contacto' %}"
+  data-url-clima="{% url 'api_clima' %}"
+  data-ciudad-inicial="{{ ciudad_inicial|escape }}"
+>
+<header class="cabecera">
+  <div class="contenedor cabecera-contenido">
+    <a href="#inicio" class="marca">
+      <img class="logo-img" src="{% static 'img/logo_materials_fadrell.png' %}" alt="Logo de Materials Fadrell">
+      <div>
+        <h1>Materials Fadrell</h1>
+        <p>Todo lo que necesitas para construir tus ideas</p>
+      </div>
+    </a>
+    <button id="btnMenu" class="btn-menu" aria-expanded="false" aria-label="Abrir menú">☰</button>
+  </div>
+
+  <nav id="menuPrincipal" class="navegacion">
+    <div class="contenedor nav-lista">
+      <a href="#inicio" class="nav-link activo">Home</a>
+      <a href="#empresa" class="nav-link">Empresa</a>
+      <a href="#productos" class="nav-link">Productos</a>
+      <a href="#oferta" class="nav-link">Oferta del mes</a>
+      <a href="#localizacion" class="nav-link">Localización</a>
+      <a href="#contacto" class="nav-link">Contacto</a>
+      <a href="#noticias" class="nav-link">Noticias</a>
+      <a href="#clima" class="nav-link clima-link">Clima</a>
+    </div>
+  </nav>
+</header>
+
+<main>
+  <section id="inicio" class="hero seccion">
+    <div class="contenedor hero-contenido">
+      <span class="etiqueta">Calidad y confianza</span>
+      <h2>Construye, repara y transforma con los mejores materiales</h2>
+      <p>Herramientas, pinturas, electricidad, plomería y materiales para todos tus proyectos.</p>
+      <a href="#productos" class="boton">Ver productos</a>
+    </div>
+  </section>
+
+  <section id="empresa" class="seccion clara">
+    <div class="contenedor">
+      <div class="titulo-seccion">
+        <span class="etiqueta">Quiénes somos</span>
+        <h2>Empresa</h2>
+      </div>
+      <div class="grid-3">
+        <article class="tarjeta"><h3>Misión</h3><p>Brindar productos confiables y atención personalizada para cada proyecto.</p></article>
+        <article class="tarjeta"><h3>Visión</h3><p>Ser una ferretería digital reconocida por su innovación y servicio.</p></article>
+        <article class="tarjeta"><h3>Horario</h3><p>Lunes a viernes: 08:00–18:00<br>Sábados: 08:00–14:00</p></article>
+      </div>
+    </div>
+  </section>
+
+  <section id="productos" class="seccion">
+    <div class="contenedor">
+      <div class="titulo-seccion"><span class="etiqueta">Catálogo</span><h2>Productos</h2></div>
+      <div class="filtros">
+        <input type="search" id="buscadorProducto" placeholder="Buscar producto...">
+        <select id="filtroCategoria">
+          <option value="Todas">Todas las categorías</option>
+        </select>
+      </div>
+      <div id="contenedorProductos" class="productos-grid"></div>
+      <p id="mensajeSinResultados" class="mensaje oculto">No se encontraron productos.</p>
+    </div>
+  </section>
+
+  <section id="oferta" class="seccion oferta-seccion">
+    <div class="contenedor oferta">
+      <div>
+        <img src="https://images.unsplash.com/photo-1504148455328-c376907d081c?auto=format&fit=crop&w=900&q=80" alt="Taladro eléctrico profesional">
+      </div>
+      <div>
+        <span class="etiqueta">Oferta del mes</span>
+        <h2>Taladro eléctrico profesional</h2>
+        <p>Potencia de 650 W, velocidad regulable y garantía de 12 meses.</p>
+        <p class="precio"><del>$79,99</del> <strong>$59,99</strong></p>
+        <button id="btnOferta" class="boton">Ver detalles</button>
+      </div>
+    </div>
+  </section>
+
+  <section id="localizacion" class="seccion clara">
+    <div class="contenedor">
+      <div class="titulo-seccion"><span class="etiqueta">Encuéntranos</span><h2>Localización</h2></div>
+      <div class="localizacion-grid">
+        <article class="tarjeta">
+          <h3>Dirección</h3>
+          <p>Av. Principal y Calle Comercial, Quito, Ecuador.</p>
+          <p><strong>Teléfono:</strong> 099 000 0000</p>
+          <p><strong>Correo:</strong> ventas@materialsfadrell.com</p>
+        </article>
+        <div class="mapa">📍<br>Materials Fadrell</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PASO 1: CONTACTO -->
+  <section id="contacto" class="seccion">
+    <div class="contenedor">
+      <div class="titulo-seccion">
+        <span class="etiqueta">Comunícate</span>
+        <h2>Contacto</h2>
+      </div>
+
+      <div class="contacto-layout">
+        <div class="contacto-info">
+          <h3>Contáctanos</h3>
+          <p>Completa el formulario. El mensaje se guardará en la tabla <strong>Contacto</strong> y recibirás un acuse de recibido por correo.</p>
+        </div>
+
+        <form id="formContacto" class="formulario formulario-contacto" novalidate>
+          {% csrf_token %}
+          <div class="campo">
+            <label for="nombre">Nombre <span class="obligatorio">*</span></label>
+            <input id="nombre" name="nombre" required minlength="3" maxlength="120" autocomplete="name" aria-describedby="errorNombre">
+            <small id="errorNombre" class="error"></small>
+          </div>
+
+          <div class="campo">
+            <label for="email">E-Mail <span class="obligatorio">*</span></label>
+            <input id="email" name="email" type="email" required maxlength="150" autocomplete="email" aria-describedby="errorEmail">
+            <small id="errorEmail" class="error"></small>
+          </div>
+
+          <div class="campo completo">
+            <label for="mensaje">Mensaje <span class="obligatorio">*</span></label>
+            <textarea id="mensaje" name="mensaje" rows="6" required minlength="5" aria-describedby="errorMensaje"></textarea>
+            <small id="errorMensaje" class="error"></small>
+          </div>
+
+          <div class="completo">
+            <button id="btnGuardarContacto" class="boton" type="submit">Guardar</button>
+          </div>
+
+          <p id="respuestaFormulario" class="mensaje oculto completo" role="status"></p>
+        </form>
+      </div>
+    </div>
+  </section>
+
+  <section id="noticias" class="seccion clara">
+    <div class="contenedor">
+      <div class="titulo-seccion"><span class="etiqueta">Novedades</span><h2>Noticias</h2></div>
+      <div id="contenedorNoticias" class="grid-3"></div>
+    </div>
+  </section>
+
+  <!-- PASO 2: CLIMA -->
+  <section id="clima" class="seccion clima-seccion">
+    <div class="contenedor">
+      <div class="titulo-seccion clima-titulo">
+        <span class="etiqueta">OpenWeatherMap API</span>
+        <h2>Clima actual</h2>
+        <p>Consulta el clima de una ciudad. Se muestran los cuatro datos solicitados: temperatura, humedad, descripción y viento.</p>
+      </div>
+
+      <form id="formClima" class="buscador-clima">
+        <label for="ciudadClima">Ciudad</label>
+        <input id="ciudadClima" name="ciudad" value="{{ ciudad_inicial }}" placeholder="Ej.: Quito" required>
+        <button id="btnConsultarClima" class="boton" type="submit">Consultar clima</button>
+      </form>
+
+      <p id="estadoClima" class="estado-clima">Pulsa “Consultar clima” para obtener la información actual.</p>
+
+      <div id="resultadoClima" class="clima-resultado oculto">
+        <div class="clima-resumen">
+          <span class="clima-icono">☁️</span>
+          <div>
+            <p id="climaCiudad" class="clima-ciudad">Quito, EC</p>
+            <p id="climaTemperaturaGrande" class="clima-temperatura-grande">-- °C</p>
+          </div>
+        </div>
+
+        <div class="clima-datos">
+          <article class="clima-dato">
+            <span>🌡️</span>
+            <strong>Temperatura</strong>
+            <p id="climaTemperatura">-- °C</p>
+          </article>
+
+          <article class="clima-dato">
+            <span>💧</span>
+            <strong>Humedad</strong>
+            <p id="climaHumedad">-- %</p>
+          </article>
+
+          <article class="clima-dato">
+            <span>🌥️</span>
+            <strong>Descripción</strong>
+            <p id="climaDescripcion">--</p>
+          </article>
+
+          <article class="clima-dato">
+            <span>💨</span>
+            <strong>Viento</strong>
+            <p id="climaViento">-- m/s</p>
+          </article>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="pie">
+  <div class="contenedor">
+    <h2>Materials Fadrell</h2>
+    <p>Quito, Ecuador · ventas@materialsfadrell.com</p>
+    <p>© <span id="anioActual"></span> Todos los derechos reservados.</p>
+  </div>
+</footer>
+
+<div id="modalOferta" class="modal" aria-hidden="true">
+  <div class="modal-contenido">
+    <button id="cerrarModal">×</button>
+    <h2>Taladro eléctrico profesional</h2>
+    <ul>
+      <li>650 W</li>
+      <li>Velocidad regulable</li>
+      <li>Mandril de 13 mm</li>
+      <li>Garantía de 12 meses</li>
+    </ul>
+  </div>
+</div>
+</body>
+</html>

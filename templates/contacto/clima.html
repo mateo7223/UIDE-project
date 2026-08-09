@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+{% block title %}Clima{% endblock %}
+{% block content %}
+<section class="panel clima-panel">
+    <h1>Reporteador de clima</h1>
+
+    <form method="get" class="busqueda-clima">
+        <label for="ciudad">Ciudad:</label>
+        <input id="ciudad" name="ciudad" value="{{ ciudad }}" placeholder="Ej.: Quito">
+        <button class="boton" type="submit">Consultar</button>
+    </form>
+
+    {% if error %}
+        <div class="mensaje warning">{{ error }}</div>
+    {% endif %}
+
+    {% if clima %}
+    <div class="clima-central">
+        <p class="ubicacion">{{ clima.ciudad }}{% if clima.pais %}, {{ clima.pais }}{% endif %}</p>
+        <div class="temperatura">{{ clima.temperatura }} °C</div>
+        <div class="datos-clima">
+            <div><strong>Temperatura</strong><span>{{ clima.temperatura }} °C</span></div>
+            <div><strong>Humedad</strong><span>{{ clima.humedad }} %</span></div>
+            <div><strong>Descripción</strong><span>{{ clima.descripcion|capfirst }}</span></div>
+            <div><strong>Viento</strong><span>{{ clima.viento }} m/s</span></div>
+        </div>
+    </div>
+    {% endif %}
+</section>
+{% endblock %}

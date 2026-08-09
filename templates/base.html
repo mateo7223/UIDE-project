@@ -1,0 +1,44 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Materiales Fadrell{% endblock %}</title>
+    <link rel="stylesheet" href="{% static 'css/estilos.css' %}">
+</head>
+<body>
+    <div class="contenedor">
+        <header class="cabecera">
+            <div>
+                <p class="marca">Materiales Fadrell</p>
+                <p class="submarca">Proyecto Django - Contacto y Clima</p>
+            </div>
+            <div class="logo">LOGO</div>
+        </header>
+
+        <nav class="menu">
+            <a href="{% url 'inicio' %}">HOME</a>
+            <a href="#">EMPRESA</a>
+            <a href="#">PRODUCTOS</a>
+            <a href="#">OFERTA DEL MES</a>
+            <a href="#">LOCALIZACIÓN</a>
+            <a href="{% url 'contacto' %}">CONTACTO</a>
+            <a href="#">NOTICIAS</a>
+            <a class="activo" href="{% url 'clima' %}">CLIMA</a>
+        </nav>
+
+        {% if messages %}
+            <section class="mensajes">
+                {% for message in messages %}
+                    <div class="mensaje {{ message.tags }}">{{ message }}</div>
+                {% endfor %}
+            </section>
+        {% endif %}
+
+        <main>
+            {% block content %}{% endblock %}
+        </main>
+    </div>
+</body>
+</html>
