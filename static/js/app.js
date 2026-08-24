@@ -1,17 +1,6 @@
-const productos = [
-  {id:1,nombre:'Taladro eléctrico',categoria:'Herramientas',precio:59.99,stock:15,imagen:'https://images.unsplash.com/photo-1504148455328-c376907d081c?auto=format&fit=crop&w=700&q=80',descripcion:'Taladro de 650 W con velocidad regulable.'},
-  {id:2,nombre:'Pintura interior blanca',categoria:'Pinturas',precio:28.50,stock:24,imagen:'https://images.unsplash.com/photo-1562259949-e8e7689d7828?auto=format&fit=crop&w=700&q=80',descripcion:'Pintura lavable para interiores, 4 litros.'},
-  {id:3,nombre:'Juego de destornilladores',categoria:'Herramientas',precio:18.75,stock:32,imagen:'https://images.unsplash.com/photo-1586864387967-d02ef85d93e8?auto=format&fit=crop&w=700&q=80',descripcion:'Juego de seis destornilladores.'},
-  {id:4,nombre:'Cable eléctrico',categoria:'Electricidad',precio:35,stock:18,imagen:'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?auto=format&fit=crop&w=700&q=80',descripcion:'Rollo de cable eléctrico de 100 metros.'},
-  {id:5,nombre:'Llave para tubería',categoria:'Plomería',precio:22.40,stock:10,imagen:'https://images.unsplash.com/photo-1607472586893-edb57bdc0e39?auto=format&fit=crop&w=700&q=80',descripcion:'Llave ajustable de alta resistencia.'},
-  {id:6,nombre:'Cemento de uso general',categoria:'Construcción',precio:9.80,stock:60,imagen:'https://images.unsplash.com/photo-1518709268805-4e9042af9f23?auto=format&fit=crop&w=700&q=80',descripcion:'Saco de cemento de 50 kg.'}
-];
-
-const noticias = [
-  {titulo:'Nueva línea de herramientas',fecha:'10 de julio de 2026',texto:'Incorporamos herramientas eléctricas con garantía de doce meses.'},
-  {titulo:'Descuento para contratistas',fecha:'5 de julio de 2026',texto:'Precios especiales en compras al por mayor.'},
-  {titulo:'Entregas dentro de Quito',fecha:'1 de julio de 2026',texto:'Realizamos entregas rápidas en diferentes sectores.'}
-];
+const productos = JSON.parse(document.getElementById('productos-data').textContent);
+const ofertas = JSON.parse(document.getElementById('ofertas-data').textContent);
+const noticias = JSON.parse(document.getElementById('noticias-data').textContent);
 
 const contenedor = document.getElementById('contenedorProductos');
 const buscador = document.getElementById('buscadorProducto');
@@ -70,11 +59,39 @@ contenedor.addEventListener('click', e => {
 });
 
 const noticiasCont = document.getElementById('contenedorNoticias');
+const sinNoticias = document.getElementById('mensajeSinNoticias');
+
+sinNoticias.classList.toggle('oculto', noticias.length > 0);
 noticias.forEach(n => {
   const a = document.createElement('article');
-  a.className = 'tarjeta';
-  a.innerHTML = `<small>${n.fecha}</small><h3>${n.titulo}</h3><p>${n.texto}</p>`;
+  a.className = 'noticia-card';
+  a.innerHTML = `
+    <img src="${n.imagen}" alt="${n.titulo}">
+    <div class="noticia-contenido">
+      <small>${n.fecha}</small>
+      <h3>${n.titulo}</h3>
+      <p>${n.contenido}</p>
+    </div>`;
   noticiasCont.appendChild(a);
+});
+
+const ofertasCont = document.getElementById('contenedorOfertas');
+const sinOfertas = document.getElementById('mensajeSinOfertas');
+
+sinOfertas.classList.toggle('oculto', ofertas.length > 0);
+ofertas.forEach(oferta => {
+  const article = document.createElement('article');
+  article.className = 'oferta-card';
+  article.innerHTML = `
+    <img src="${oferta.imagen}" alt="${oferta.producto}">
+    <div class="oferta-contenido">
+      <span class="categoria">${oferta.categoria}</span>
+      <h3>${oferta.producto}</h3>
+      <p>${oferta.descripcion}</p>
+      <p class="precio"><del>$${oferta.precio_anterior.toFixed(2)}</del> <strong>$${oferta.precio_oferta.toFixed(2)}</strong></p>
+      <button class="boton ver-oferta" data-id="${oferta.id}">Ver detalles</button>
+    </div>`;
+  ofertasCont.appendChild(article);
 });
 
 function mostrarRespuestaFormulario(texto, tipo = 'ok') {
@@ -250,7 +267,13 @@ $(document).ready(function() {
     $('html,body').animate({scrollTop: $(destino).offset().top - 115}, 550);
   });
 
-  $('#btnOferta').on('click', function() {
+  $('.ver-oferta').on('click', function() {
+    const oferta = ofertas.find(item => item.id === Number($(this).data('id')));
+    if (oferta) {
+      $('#modalOfertaTitulo').text(oferta.producto);
+      $('#modalOfertaTexto').text(oferta.descripcion);
+    }
+
     $('#modalOferta')
       .fadeIn(200)
       .addClass('abierto')

@@ -8,6 +8,9 @@
   <title>Materials Fadrell</title>
   <link rel="stylesheet" href="{% static 'css/estilos.css' %}">
   <script src="https://code.jquery.com/jquery-3.7.1.min.js" defer></script>
+  {{ productos|json_script:"productos-data" }}
+  {{ ofertas|json_script:"ofertas-data" }}
+  {{ noticias|json_script:"noticias-data" }}
   <script src="{% static 'js/app.js' %}" defer></script>
 </head>
 <body
@@ -58,9 +61,31 @@
         <h2>Empresa</h2>
       </div>
       <div class="grid-3">
-        <article class="tarjeta"><h3>Misión</h3><p>Brindar productos confiables y atención personalizada para cada proyecto.</p></article>
-        <article class="tarjeta"><h3>Visión</h3><p>Ser una ferretería digital reconocida por su innovación y servicio.</p></article>
-        <article class="tarjeta"><h3>Horario</h3><p>Lunes a viernes: 08:00–18:00<br>Sábados: 08:00–14:00</p></article>
+        <article class="tarjeta"><h3>Misión</h3><p>Proveer materiales de construcción, ferretería y acabados con calidad comprobada, asesoría cercana y entregas responsables para hogares, maestros de obra y empresas.</p></article>
+        <article class="tarjeta"><h3>Visión</h3><p>Ser el emprendimiento ferretero de referencia en Quito por innovación digital, servicio confiable y soluciones oportunas para cada proyecto.</p></article>
+        <article class="tarjeta"><h3>Valores</h3><p>Responsabilidad, honestidad, puntualidad, respeto por el cliente, trabajo en equipo y mejora continua.</p></article>
+      </div>
+      <div class="organigrama">
+        <h3>Organigrama empresarial</h3>
+        <div class="organigrama-niveles">
+          <div>Gerencia general</div>
+          <div>Ventas y atención al cliente</div>
+          <div>Bodega y logística</div>
+          <div>Compras y administración</div>
+        </div>
+      </div>
+      <div class="colaboradores-grid">
+        {% for colaborador in colaboradores %}
+          <article class="colaborador">
+            <img src="{{ colaborador.foto_url }}" alt="{{ colaborador.nombre }}">
+            <div>
+              <h3>{{ colaborador.nombre }}</h3>
+              <p>{{ colaborador.cargo }}</p>
+            </div>
+          </article>
+        {% empty %}
+          <p class="mensaje">Registra colaboradores en el panel de administración.</p>
+        {% endfor %}
       </div>
     </div>
   </section>
@@ -80,17 +105,10 @@
   </section>
 
   <section id="oferta" class="seccion oferta-seccion">
-    <div class="contenedor oferta">
-      <div>
-        <img src="https://images.unsplash.com/photo-1504148455328-c376907d081c?auto=format&fit=crop&w=900&q=80" alt="Taladro eléctrico profesional">
-      </div>
-      <div>
-        <span class="etiqueta">Oferta del mes</span>
-        <h2>Taladro eléctrico profesional</h2>
-        <p>Potencia de 650 W, velocidad regulable y garantía de 12 meses.</p>
-        <p class="precio"><del>$79,99</del> <strong>$59,99</strong></p>
-        <button id="btnOferta" class="boton">Ver detalles</button>
-      </div>
+    <div class="contenedor">
+      <div class="titulo-seccion oferta-titulo"><span class="etiqueta">Promociones vigentes</span><h2>Oferta del mes</h2></div>
+      <div id="contenedorOfertas" class="ofertas-grid"></div>
+      <p id="mensajeSinOfertas" class="mensaje oculto">No hay ofertas activas este mes.</p>
     </div>
   </section>
 
@@ -156,7 +174,8 @@
   <section id="noticias" class="seccion clara">
     <div class="contenedor">
       <div class="titulo-seccion"><span class="etiqueta">Novedades</span><h2>Noticias</h2></div>
-      <div id="contenedorNoticias" class="grid-3"></div>
+      <div id="contenedorNoticias" class="noticias-grid"></div>
+      <p id="mensajeSinNoticias" class="mensaje oculto">No hay noticias publicadas.</p>
     </div>
   </section>
 
@@ -227,13 +246,8 @@
 <div id="modalOferta" class="modal" aria-hidden="true">
   <div class="modal-contenido">
     <button id="cerrarModal">×</button>
-    <h2>Taladro eléctrico profesional</h2>
-    <ul>
-      <li>650 W</li>
-      <li>Velocidad regulable</li>
-      <li>Mandril de 13 mm</li>
-      <li>Garantía de 12 meses</li>
-    </ul>
+    <h2 id="modalOfertaTitulo">Oferta del mes</h2>
+    <p id="modalOfertaTexto"></p>
   </div>
 </div>
 </body>

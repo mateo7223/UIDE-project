@@ -4,6 +4,21 @@ Se tomó como base la web original de Materials Fadrell y se integraron las func
 
 ## Funcionalidades agregadas
 
+### Sitio web del emprendimiento
+- Menú de una sola página con **Home**, **Empresa**, **Productos**, **Oferta del mes**, **Localización**, **Contacto**, **Noticias** y **Clima**.
+- Home con información comercial de Materials Fadrell.
+- Empresa con misión, visión, valores, organigrama, fotos y cargos de colaboradores.
+- Localización visible con dirección, teléfono, correo y mapa visual.
+- Colores e imágenes acordes al emprendimiento ferretero.
+
+### Productos, ofertas y noticias desde base de datos
+- Tabla `Producto`: nombre, categoría, descripción, precio, stock, imagen y estado activo.
+- Tabla `OfertaMes`: producto relacionado, descripción, precio anterior, precio de oferta y estado activo.
+- Tabla `Noticia`: fecha, título, contenido, imagen y estado de publicación.
+- Tabla `Colaborador`: nombre, cargo, foto y orden.
+- La página principal consulta estas tablas con Django ORM y muestra la información en el front end.
+- La migración `0002_catalogo_ofertas_noticias_colaboradores.py` carga datos iniciales para que el sitio tenga contenido al instalarse.
+
 ### Paso 1 - Contacto E/R
 - Tabla de base de datos llamada `Contacto`.
 - Campos: `nombre`, `email` y `mensaje`.

@@ -7,13 +7,55 @@ from django.shortcuts import render
 from django.views.decorators.http import require_GET, require_POST
 
 from .forms import ContactoForm
+from .models import Colaborador, Noticia, OfertaMes, Producto
 
 
 def inicio(request):
+    productos = [
+        {
+            "id": producto.id,
+            "nombre": producto.nombre,
+            "categoria": producto.categoria,
+            "descripcion": producto.descripcion,
+            "precio": float(producto.precio),
+            "stock": producto.stock,
+            "imagen": producto.imagen_url,
+        }
+        for producto in Producto.objects.filter(activo=True)
+    ]
+    ofertas = [
+        {
+            "id": oferta.id,
+            "producto": oferta.producto.nombre,
+            "categoria": oferta.producto.categoria,
+            "descripcion": oferta.descripcion,
+            "precio_anterior": float(oferta.precio_anterior),
+            "precio_oferta": float(oferta.precio_oferta),
+            "imagen": oferta.producto.imagen_url,
+        }
+        for oferta in OfertaMes.objects.select_related("producto").filter(activa=True)
+    ]
+    noticias = [
+        {
+            "fecha": noticia.fecha.strftime("%d/%m/%Y"),
+            "titulo": noticia.titulo,
+            "contenido": noticia.contenido,
+            "imagen": noticia.imagen_url,
+        }
+        for noticia in Noticia.objects.filter(publicada=True)
+    ]
+    colaboradores = Colaborador.objects.all()
+
     return render(
         request,
         "index.html",
-        {"ciudad_inicial": settings.OPENWEATHER_DEFAULT_CITY},
+        {
+            "ciudad_inicial": settings.OPENWEATHER_DEFAULT_CITY,
+            "productos": productos,
+            "ofertas": ofertas,
+            "noticias": noticias,
+            "colaboradores": colaboradores,
+        },
     )
 
 
@@ -97,6 +139,7 @@ def api_clima(request):
                 "units": "metric",
                 "lang": "es",
             },
+            proxies={"http": "", "https": ""},
             timeout=10,
         )
         respuesta.raise_for_status()
