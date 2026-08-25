@@ -1,0 +1,14 @@
+image: python:3.13
+
+pages:
+  stage: deploy
+  script:
+    - pip install -r requirements.txt
+    - python manage.py migrate --noinput
+    - python scripts/build_gitlab_pages.py
+    - cp -r static public/static
+  artifacts:
+    paths:
+      - public
+  rules:
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
