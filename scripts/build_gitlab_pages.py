@@ -19,7 +19,10 @@ def main():
     if response.status_code != 200:
         raise SystemExit(f"No se pudo renderizar la pagina principal: {response.status_code}")
 
-    (public_dir / "index.html").write_bytes(response.content)
+    html = response.content.decode("utf-8")
+    html = html.replace('href="/static/', 'href="static/')
+    html = html.replace('src="/static/', 'src="static/')
+    (public_dir / "index.html").write_text(html, encoding="utf-8")
 
 
 if __name__ == "__main__":
