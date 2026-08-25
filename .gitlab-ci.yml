@@ -7,8 +7,10 @@ pages:
     - python manage.py migrate --noinput
     - python scripts/build_gitlab_pages.py
     - cp -r static public/static
+  pages:
+    publish: public
   artifacts:
     paths:
       - public
   rules:
-    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+    - if: $CI_COMMIT_BRANCH == "main"
